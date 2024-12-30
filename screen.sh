@@ -5,7 +5,6 @@
 # source ~/.bashrc
 # abuses ld.so.preload overwriting to get root.
 # bug: https://lists.gnu.org/archive/html/screen-devel/2017-01/msg00025.html
-# HACK THE PLANET
 # ~ infodox (25/1/2017) 
 echo "~ gnu/screenroot ~"
 echo "[+] First, we create our shell and library..."
