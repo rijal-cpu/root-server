@@ -1,3 +1,8 @@
+# curl ipinfo.io/ip / ifconfig   //Untuk cek IP
+# netstat -tupln                 //Untuk cek port yang terbuka Seprti sshd
+# ssh network@216.159.33 -p 2233 //Untuk connect di terminal windows
+# history                        //Untuk cek riwayat
+
 Backconnect dari WebShell ke VPS dengan perintah:
 
 1. Menggunakan Bash
