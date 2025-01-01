@@ -1,0 +1,132 @@
+1. Nonaktifkan Penyimpanan Riwayat Bash Secara Permanen
+Riwayat perintah shell disimpan dalam file ~/.bash_history. Anda bisa menonaktifkan fitur ini secara permanen dengan mengatur beberapa variabel environment.
+Langkah-langkah:
+1.	Edit file konfigurasi Bash (~/.bashrc atau /etc/bash.bashrc jika berlaku untuk semua pengguna):
+nano ~/.bashrc
+2.	Tambahkan baris berikut untuk menonaktifkan riwayat:
+export HISTFILE=
+export HISTSIZE=0
+export HISTFILESIZE=0
+
+o	HISTFILE=: Menghapus lokasi file untuk menyimpan riwayat.
+o	HISTSIZE=0: Menentukan jumlah riwayat yang disimpan di memori menjadi nol.
+o	HISTFILESIZE=0: Menentukan ukuran file riwayat menjadi nol.
+3.	Simpan dan tutup file.
+
+Terapkan perubahan:
+4.	source ~/.bashrc
+________________________________________
+2. Hapus Riwayat yang Sudah Ada
+Setelah menonaktifkan riwayat, Anda mungkin ingin menghapus riwayat yang sudah ada.
+1.	Hapus file riwayat untuk pengguna tertentu:
+rm -f ~/.bash_history
+
+2.	Bersihkan riwayat dalam sesi aktif:
+history -c
+________________________________________
+3. Nonaktifkan Riwayat untuk Semua Pengguna
+Jika Anda ingin menerapkan pengaturan ini untuk semua pengguna di server, tambahkan variabel yang sama ke file global, seperti:
+
+nano /etc/profile
+
+Tambahkan:
+export HISTFILE=
+export HISTSIZE=0
+export HISTFILESIZE=0
+
+Terapkan perubahan dengan perintah:
+source /etc/profile
+________________________________________
+4. Nonaktifkan Riwayat Sementara (Sesi Saat Ini Saja)
+Untuk menonaktifkan riwayat hanya selama sesi login saat ini, gunakan perintah ini:
+
+export HISTFILE=
+________________________________________
+5. Nonaktifkan Logging Riwayat di Aplikasi Web Server
+Jika Anda berbicara tentang server web seperti Nginx atau Apache, Anda dapat menonaktifkan logging riwayat HTTP di log file server web.
+
+Untuk Nginx:
+1.	Edit file konfigurasi Nginx:
+nano /etc/nginx/nginx.conf
+2.	Nonaktifkan akses log dengan menambahkan baris berikut
+Cari directive berikut dalam konfigurasi Anda:
+access_log  /var/log/nginx/access.log  main;
+
+Ubah atau ganti dengan:
+access_log off;
+
+Langkah 2: Nonaktifkan Logging Error Temukan baris:
+error_log /var/log/nginx/error.log;
+
+Ubah menjadi:
+error_log /dev/null crit;
+
+Restart Nginx:
+systemctl restart nginx
+
+3.	Langkah selanjutnya Verifikasi:
+cat /var/log/nginx/access.log
+cat /var/log/nginx/error.log
+
+Untuk Apache:
+Langkah 1: Edit Konfigurasi Utama Apache
+1.	Buka file konfigurasi utama Apache:
+nano /etc/httpd/conf/httpd.conf
+
+Atau pada distribusi berbasis Debian/Ubuntu:
+      nano /etc/apache2/apache2.conf
+
+2.	Cari directive berikut yang bertanggung jawab untuk logging akses:
+CustomLog logs/access_log combined
+
+Atau pada distribusi berbasis Debian/Ubuntu:
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+3.	Komentari atau hapus baris tersebut untuk menonaktifkan logging akses:
+# CustomLog logs/access_log combined
+
+Alternatif: Jika Anda tidak ingin menghapusnya, Anda bisa mengarahkan log ke /dev/null untuk menonaktifkan secara efektif:
+
+    CustomLog /dev/null common
+________________________________________
+Langkah 2: Nonaktifkan Logging Error (Opsional)
+Jika Anda juga ingin mengurangi atau menonaktifkan logging error:
+1.	Cari directive berikut:
+ErrorLog logs/error_log
+
+Atau pada distribusi berbasis Debian/Ubuntu:
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+
+2.	Arahkan log error ke /dev/null:
+ErrorLog /dev/null
+
+Catatan: Menonaktifkan log error sangat tidak disarankan karena akan menyulitkan Anda dalam melakukan debugging.
+________________________________________
+Langkah 3: Uji Konfigurasi
+Sebelum merestart Apache, selalu uji konfigurasi untuk memastikan tidak ada kesalahan:
+apachectl configtest
+
+Atau pada distribusi berbasis Debian/Ubuntu:
+apache2ctl configtest
+
+Jika valid, Anda akan melihat pesan:
+Syntax OK
+________________________________________
+Langkah 4: Restart Apache
+Setelah semua perubahan dilakukan, restart layanan Apache untuk menerapkan konfigurasi:
+systemctl restart httpd
+
+Atau pada distribusi berbasis Debian/Ubuntu:
+systemctl restart apache2
+________________________________________
+Langkah 5: Verifikasi
+1.	Pastikan log akses dan log error tidak lagi dibuat. Periksa file log:
+cat /var/log/httpd/access_log
+
+atau pada distribusi berbasis Debian/Ubuntu:
+     cat /var/log/apache2/access.log
+2.	Log seharusnya kosong atau tidak ada entri baru.
+________________________________________
+
+
+
