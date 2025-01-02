@@ -1,0 +1,71 @@
+Untuk menghentikan pencatatan log error di PHP secara permanen:
+________________________________________
+1. Ubah log_errors menjadi Off
+Cari dan ubah nilai log_errors menjadi Off:
+
+sed -i 's/^log_errors\s*=\s*On/log_errors = Off/' /etc/php.ini
+________________________________________
+2. Ubah display_errors menjadi Off
+Cari dan ubah nilai display_errors menjadi Off:
+
+sed -i 's/^display_errors\s*=\s*On/display_errors = Off/' /etc/php.ini
+________________________________________
+3. Ubah display_startup_errors menjadi Off
+Cari dan ubah nilai display_startup_errors menjadi Off:
+
+sed -i 's/^display_startup_errors\s*=\s*On/display_startup_errors = Off/' /etc/php.ini
+________________________________________
+4. Ubah error_reporting menjadi 0
+Cari dan ubah nilai error_reporting menjadi 0:
+
+sed -i 's/^error_reporting\s*=.*/error_reporting = 0/' /etc/php.ini
+________________________________________
+5. mengganti log_errors_max_len = 1024 menjadi log_errors_max_len = Off
+
+sed -i 's/^log_errors_max_len = 1024/log_errors_max_len = Off/' /etc/php.ini
+________________________________________
+6. Ubah atau Tambahkan error_log ke /dev/null
+Jika error_log ada, ubah ke /dev/null. Jika tidak ada, tambahkan baris ini:
+
+grep -q '^error_log' /etc/php.ini && sed -i 's|^error_log\s*=.*|error_log = /dev/null|' /etc/php.ini || echo "error_log = /dev/null" >> /etc/php.ini
+________________________________________
+7. Verifikasi Perubahan
+Gunakan grep untuk memastikan semua konfigurasi telah diubah:
+
+grep -E '^log_errors|^display_errors|^display_startup_errors|^error_reporting|^error_log' /etc/php.ini
+________________________________________
+8. Restart Server PHP
+Setelah perubahan dilakukan, restart server PHP:
+systemctl restart php-fpm
+
+atau jika Anda menggunakan Apache:
+systemctl restart nginx
+________________________________________
+Pastikan File Log yang Ada Dihapus:
+
+rm /var/log/php-fpm/* /var/log/nginx/* /var/log/apache2/* /var/log/syslog*
+________________________________________
+Berikut adalah perintah untuk langsung mencari dan mengganti pengaturan php_admin_value[error_log] dan php_admin_flag[log_errors] di file konfigurasi PHP-FPM menggunakan sed:
+________________________________________
+1. Ganti php_admin_value[error_log] ke /dev/null
+
+sed -i 's|^\(php_admin_value\[error_log\]\s*=\s*\).*|\1/dev/null|' /etc/php-fpm.d/www.conf
+________________________________________
+2. Ganti php_admin_flag[log_errors] ke off
+
+sed -i 's|^\(php_admin_flag\[log_errors\]\s*=\s*\).*|\1off|' /etc/php-fpm.d/www.conf
+________________________________________
+3. Periksa dan Ganti di Semua File di /etc/php-fpm.d/
+Jika ada beberapa file konfigurasi di direktori /etc/php-fpm.d/, jalankan perintah ini untuk mengganti di semua file:
+
+sed -i 's|^\(php_admin_value\[error_log\]\s*=\s*\).*|\1/dev/null|' /etc/php-fpm.d/*.conf
+
+sed -i 's|^\(php_admin_flag\[log_errors\]\s*=\s*\).*|\1off|' /etc/php-fpm.d/*.conf
+________________________________________
+4. Verifikasi Hasil
+grep -E 'php_admin_value\[error_log\]|php_admin_flag\[log_errors\]' /etc/php-fpm.d/*.conf
+
+Verifikasi Kembali:
+grep -E 'log_errors|display_errors|display_startup_errors|error_reporting|error_log' /etc/php.d/* /etc/php-fpm.d/*
+________________________________________
+
