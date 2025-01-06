@@ -2,11 +2,44 @@
 
 # Skrip ini digunakan untuk memeriksa apakah sistem rentan terhadap beberapa kerentanan utama dari tahun 2021 hingga 2024
 # Termasuk CVE-2021-4034, CVE-2022-0847 (Dirty Pipe), CVE-2023-3215, dan CVE-2024-0013
+# Dan menambahkan pemeriksaan layanan seperti MYSQL, PERL, PYTHON, WGET, CURL, GCC, dan PKEXEC
+# kalau eror gunakan perintah ini sed -i 's/\r//' d.sh
 
-echo "===== Scanner Kerentanan Polkit dan Kernel Vulnerabilities ====="
-echo "Memeriksa apakah 'pkexec' tersedia di sistem..."
+echo "===== Scanner Kerentanan dan Status Layanan ====="
+
+# Pemeriksaan layanan
+echo "Memeriksa status layanan..."
+
+check_status() {
+    local service=$1
+    if command -v $service > /dev/null 2>&1; then
+        echo "$service: ON"
+    else
+        echo "$service: OFF"
+    fi
+}
+
+# Periksa status layanan
+check_status "mysql"
+check_status "perl"
+check_status "python"
+check_status "wget"
+check_status "curl"
+check_status "gcc"
+check_status "pkexec"
+
+echo "Memeriksa fungsi yang dinonaktifkan..."
+
+# Pemeriksaan fungsi yang dinonaktifkan
+disabled_functions=$(php -r "echo ini_get('disable_functions');")
+if [[ -z "$disabled_functions" ]]; then
+    echo "[INFO] Tidak ada fungsi yang dinonaktifkan di PHP."
+else
+    echo "Fungsi yang dinonaktifkan: $disabled_functions"
+fi
 
 # Langkah 1: Periksa apakah pkexec terpasang
+echo "Memeriksa apakah 'pkexec' tersedia di sistem..."
 if ! command -v pkexec > /dev/null 2>&1; then
     echo "[INFO] pkexec tidak ditemukan di sistem ini."
 else
