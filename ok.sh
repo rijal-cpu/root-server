@@ -105,4 +105,43 @@ else
     echo "[INFO] Kernel versi $kernel_version tidak rentan terhadap CVE-2024-0013."
 fi
 
+# Langkah 7: Memeriksa kerentanan GNU Screen (CVE-2019-18420) - Local Privilege Escalation
+echo "Memeriksa kerentanan GNU Screen (CVE-2019-18420) - Local Privilege Escalation..."
+
+# Periksa apakah GNU Screen terpasang
+if command -v screen > /dev/null 2>&1; then
+    echo "[INFO] GNU Screen terpasang di sistem ini."
+
+    # Memeriksa versi GNU Screen
+    screen_version=$(screen --version | head -n 1 | awk '{print $3}')
+    echo "[INFO] Versi GNU Screen yang terpasang: $screen_version"
+
+    # Daftar versi GNU Screen yang rentan
+    vulnerable_versions=("4.5.0" "4.5.1" "4.6.0" "4.6.1" "4.6.2" "4.7.0")
+    is_vulnerable=false
+    for v in "${vulnerable_versions[@]}"; do
+        if [[ "$screen_version" == "$v" ]]; then
+            is_vulnerable=true
+            break
+        fi
+    done
+
+    # Laporan kerentanan
+    if [[ "$is_vulnerable" == true ]]; then
+        echo "[ALERT] Sistem ini rentan terhadap CVE-2019-18420 (Local Privilege Escalation) pada versi GNU Screen $screen_version."
+    else
+        echo "[INFO] Sistem ini TIDAK rentan terhadap CVE-2019-18420 berdasarkan versi GNU Screen."
+    fi
+
+    # Cek apakah setuid pada executable screen ada
+    screen_binary=$(which screen)
+    if [[ -f "$screen_binary" && -x "$screen_binary" && $(stat -c "%a" "$screen_binary") == "4755" ]]; then
+        echo "[ALERT] Binary GNU Screen memiliki hak akses setuid (4755), yang memungkinkan eskalasi hak istimewa."
+    else
+        echo "[INFO] Binary GNU Screen tidak memiliki hak akses setuid."
+    fi
+else
+    echo "[INFO] GNU Screen tidak ditemukan di sistem ini."
+fi
+
 echo "===== Pengecekan selesai ====="
