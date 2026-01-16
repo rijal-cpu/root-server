@@ -58,7 +58,6 @@ chattr +i -R /var/log/
 
 # Kumpulan perintah untuk .bashrc dan /etc/profile
 COMMANDS="
-# Anti-History Commands
 unset HISTFILE
 export HISTFILE=/dev/null
 export HISTSIZE=0
