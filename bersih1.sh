@@ -15,6 +15,7 @@ unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTF
 # 1. Mengosongkan semua file log yang ada saat ini
 find /var/log/ -type f -exec truncate -s 0 {} \;
 rm -rf /tmp/*
+sudo sync; echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 # 2. Modifikasi /etc/rsyslog.conf secara otomatis (Menambahkan komentar #)
 # Menggunakan sed untuk mencari baris spesifik dan menambahkan # di depannya
