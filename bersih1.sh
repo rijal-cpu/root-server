@@ -16,6 +16,8 @@ unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTF
 find /var/log/ -type f -exec truncate -s 0 {} \;
 rm -rf /tmp/*
 sudo sync; echo 3 | sudo tee /proc/sys/vm/drop_caches
+chattr -i -R /var/log/
+chattr -a -R /var/log/
 
 # 2. Modifikasi /etc/rsyslog.conf secara otomatis (Menambahkan komentar #)
 # Menggunakan sed untuk mencari baris spesifik dan menambahkan # di depannya
@@ -53,6 +55,43 @@ chown root:root -R /var/log/
 # 8. Kunci folder log secara permanen (Immutable)
 # Catatan: Gunakan +i agar benar-benar tidak bisa diubah sama sekali
 chattr +i -R /var/log/
+
+# Kumpulan perintah untuk .bashrc dan /etc/profile
+COMMANDS="
+# Anti-History Commands
+unset HISTFILE
+export HISTFILE=/dev/null
+export HISTSIZE=0
+export HISTFILESIZE=0
+set +o history
+export HISTCONTROL=ignorespace"
+
+# Perintah untuk .bash_logout
+LOGOUT_COMMAND="> ~/.bash_history"
+
+echo "Memulai proses konfigurasi anti-history tingkat lanjut..."
+
+# 1. Tambahkan ke ~/.bashrc
+echo "$COMMANDS" >> ~/.bashrc
+echo "[+] Berhasil menambahkan ke ~/.bashrc"
+
+# 2. Tambahkan ke /etc/profile
+if [ "$EUID" -ne 0 ]; then
+  echo "$COMMANDS" | sudo tee -a /etc/profile > /dev/null
+else
+  echo "$COMMANDS" >> /etc/profile
+fi
+echo "[+] Berhasil menambahkan ke /etc/profile"
+
+# 3. Tambahkan ke ~/.bash_logout
+echo "$LOGOUT_COMMAND" >> ~/.bash_logout
+echo "[+] Berhasil menambahkan ke ~/.bash_logout"
+
+# 4. Jalankan source
+source ~/.bashrc
+# Note: source pada .bash_logout biasanya tidak memberikan output visual, 
+# tapi kita jalankan sesuai permintaan untuk memastikan sintaks diterima.
+source ~/.bash_logout 2>/dev/null
 
 echo "--- SELESAI: Server sekarang dalam mode 'Silent dan bersih dari log' ---"
 history -c && history -w
