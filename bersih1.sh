@@ -15,6 +15,7 @@ echo "--- Memulai proses pembersihan log dan penguncian jejak log  ---"
 
 # 1. Mengosongkan semua file log yang ada saat ini
 find /var/log/ -type f -exec truncate -s 0 {} \; 2>/dev/null
+chattr -i -R /tmp/
 rm -rf /tmp/* 2>/dev/null
 sudo sync; echo 3 | sudo tee /proc/sys/vm/drop_caches
 find /var/log/ -exec touch -r /usr/games {} \;
