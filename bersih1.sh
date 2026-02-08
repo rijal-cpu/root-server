@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTFILESIZE=0 && set +o history && export HISTCONTROL=ignorespace
+unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTFILESIZE=0 && set +o history && export HISTCONTROL=ignorespace && export TERM=xterm
 
 echo "--- Memulai proses pembersihan log dan penguncian jejak log  ---"
 
